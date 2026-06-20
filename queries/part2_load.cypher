@@ -19,14 +19,9 @@ CREATE CONSTRAINT movie_id_unique FOR (m:Movie) REQUIRE m.movieId IS UNIQUE;
 CREATE CONSTRAINT genre_unique FOR (g:Genre) REQUIRE g.name IS UNIQUE;
 
 CALL apoc.periodic.iterate(
-    LOAD CSV WITH HEADERS FROM 'file:///ratings.csv' AS map RETURN map,
-    MATCH (u: User {userId: toInteger(map.userId)})
+    "LOAD CSV WITH HEADERS FROM 'file:///ratings.csv' AS map RETURN map",
+    "MATCH (u: User {userId: toInteger(map.userId)})
     MATCH (m: Movie {movieId: toInteger(map.movieId)})
-    MERGE (u)-[:RATED {rating: map.rating, timestamp: map.timestamp}]->(m),
+    MERGE (u)-[:RATED {rating: map.rating, timestamp: map.timestamp}]->(m)",
     {batchSize: 1000, parallel: false}
-)
-
-# LOAD CSV WITH HEADERS FROM 'file:///ratings.csv' AS map
-# MATCH (u: User {userId: toInteger(map.userId)})
-# MATCH (m: Movie {movieId: toInteger(map.movieId)})
-# MERGE (u)-[:RATED {rating: map.rating, timestamp: map.timestamp}]->(m);
+);
