@@ -78,6 +78,40 @@ CREATE CONSTRAINT genre_unique FOR (g:Genre) REQUIRE g.name IS UNIQUE;
 
 
 # Task 2
+
+1. Перший запит - завантаження користувачів. Виходячи зі структури в CSV на нашої запланованої схеми, найбільш логічним було почати саме з цієї сутності. Оскільки ми розуміємо, що маємо закласти синтетичний ключ, відразу ставимо індекс на користувача.
+
+2. Другий крок - вивантаження фільмів. В цій таблиці знаходятся дві наших сутності плюс зв'язок, Фільм-Жанр. Тож вивантажуємо їх з оптимізацією даних і завантаженням. Додаємо індекси.
+
+3. Третій крок - чисте встановлення ребра RATED. В CSV зберігається лише релятивний зв'язок.
+
+Результат виконання перевірочного скрипта
+
++-------+
+| users |
++-------+
+| 6040  |
++-------+
+
+1 row
+ready to start consuming query after 12 ms, results consumed after another 0 ms
++--------+
+| movies |
++--------+
+| 3883   |
++--------+
+
+1 row
+ready to start consuming query after 12 ms, results consumed after another 0 ms
++---------+
+| ratings |
++---------+
+| 1000209 |
++---------+
+
+1 row
+ready to start consuming query after 15 ms, results consumed after another 0 ms
+
 # Task 3
 # Task 4
 # Task 5
