@@ -22,6 +22,6 @@ CALL apoc.periodic.iterate(
     "LOAD CSV WITH HEADERS FROM 'file:///ratings.csv' AS map RETURN map",
     "MATCH (u: User {userId: toInteger(map.userId)})
     MATCH (m: Movie {movieId: toInteger(map.movieId)})
-    MERGE (u)-[:RATED {rating: map.rating, timestamp: map.timestamp}]->(m)",
+    MERGE (u)-[:RATED {rating: toFloat(map.rating), timestamp: map.timestamp}]->(m)",
     {batchSize: 1000, parallel: false}
 );
