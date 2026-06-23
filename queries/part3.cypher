@@ -33,4 +33,4 @@ LIMIT 10;
 MATCH path = shortestPath(
   (u1:User {userId: 1})-[:RATED*]-(u2:User {userId: 2})
 )
-RETURN path, length(path) AS hops
+RETURN path, length(path) AS hops;
