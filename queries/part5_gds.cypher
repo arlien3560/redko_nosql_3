@@ -95,17 +95,45 @@ CALL gds.graph.project(
 )
 YIELD graphName, nodeCount, relationshipCount;
 
-MATCH (a:User {userId: 1}), (b:User {userId: 100})
+MATCH (u:User)-[:SIMILAR]-()
+WITH u, count(*) AS deg
+ORDER BY deg DESC
+LIMIT 10
+RETURN u.userId, deg;
+
+MATCH (a:User), (b:User)
+WHERE a.userId IN [4277,1285,3391,5100,4448,1835,549,5795,4169,3539]
+  AND b.userId IN [4277,1285,3391,5100,4448,1835,549,5795,4169,3539]
+  AND a.userId < b.userId
+WITH a, b
 CALL gds.shortestPath.dijkstra.stream('userGraph', {
   sourceNode: id(a),
   targetNode: id(b),
   relationshipWeightProperty: 'weight'
 })
-YIELD totalCost, nodeIds
-RETURN
-  totalCost,
-  [nodeId IN nodeIds | gds.util.asNode(nodeId).userId] AS userChain,
-  size(nodeIds) - 2 AS intermediateUsers;
+YIELD nodeIds
+WITH size(nodeIds) - 1 AS hops
+RETURN count(*) AS pairs, avg(hops) AS avgHops, min(hops) AS minHops, max(hops) AS maxHops;
+
+MATCH (u:User)-[:SIMILAR]-()
+WITH u, count(*) AS deg
+ORDER BY deg DESC
+SKIP 1200 LIMIT 10
+RETURN u.userId, deg;
+
+MATCH (a:User), (b:User)
+WHERE a.userId IN [4139,4132,2063,5574,285,4049,4001,3998,3979,5592]
+  AND b.userId IN [4139,4132,2063,5574,285,4049,4001,3998,3979,5592]
+  AND a.userId < b.userId
+WITH a, b
+CALL gds.shortestPath.dijkstra.stream('userGraph', {
+  sourceNode: id(a),
+  targetNode: id(b),
+  relationshipWeightProperty: 'weight'
+})
+YIELD nodeIds
+WITH size(nodeIds) - 1 AS hops
+RETURN count(*) AS pairs, avg(hops) AS avgHops, min(hops) AS minHops, max(hops) AS maxHops;
 
 CALL gds.graph.drop('userGraph');
 MATCH ()-[sim:SIMILAR]-() DELETE sim;
