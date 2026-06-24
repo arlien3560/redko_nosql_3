@@ -24,6 +24,12 @@ RETURN gds.util.asNode(nodeId).title AS movie, score
 ORDER BY score DESC
 LIMIT 20;
 
+MATCH (m1:Movie)-[c:CO_RATED]-(m2:Movie)
+WHERE m1.title IN ['American Beauty (1999)','Star Wars: Episode IV - A New Hope (1977)',
+  'Matrix, The (1999)','Fargo (1996)','Silence of the Lambs, The (1991)']
+RETURN m1, c, m2
+LIMIT 20;
+
 CALL gds.graph.drop('movieGraph');
 MATCH ()-[co:CO_RATED]-() DELETE co;
 
@@ -72,6 +78,11 @@ ORDER BY cnt DESC
 WITH community, collect({genre: genre, cnt: cnt})[0..3] AS topGenres
 RETURN community, topGenres
 ORDER BY community;
+
+MATCH (u1:User)-[s:SIMILAR]-(u2:User)
+WHERE u1.community IN [4168, 5681, 4343, 3413]
+RETURN u1, s, u2
+LIMIT 20;
 
 CALL gds.graph.drop('userSimilarity');
 MATCH ()-[sim:SIMILAR]-() DELETE sim;
