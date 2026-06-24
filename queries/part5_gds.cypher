@@ -146,5 +146,14 @@ YIELD nodeIds
 WITH size(nodeIds) - 1 AS hops
 RETURN count(*) AS pairs, avg(hops) AS avgHops, min(hops) AS minHops, max(hops) AS maxHops;
 
+MATCH (a:User {userId: 549}), (b:User {userId: 4169})
+CALL gds.shortestPath.dijkstra.stream('userGraph', {
+  sourceNode: id(a),
+  targetNode: id(b),
+  relationshipWeightProperty: 'weight'
+})
+YIELD path
+RETURN path;
+
 CALL gds.graph.drop('userGraph');
 MATCH ()-[sim:SIMILAR]-() DELETE sim;
